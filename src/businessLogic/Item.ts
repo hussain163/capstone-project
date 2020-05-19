@@ -37,8 +37,8 @@ export async function checkItemExists(imageId: string): Promise<Integer> {
     return await itemAcess.checkIfItemExists(imageId)
 }  
 
-export function createSignedUrl(imageId: string): string{
-    return itemAcess.createSignedUrl(imageId)
+export async function createSignedUrl(imageId: string): string{
+    return await itemAcess.createSignedUrl(imageId)
 }
 
 export async function getItem(imageId: string): Promise<Item[]>{

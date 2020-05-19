@@ -1,0 +1,18 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "update-category",
+    "type": "object",
+    "properties": {
+      "description":{
+          "type": "string"
+      },
+      "heading":{
+        "type": "string"
+      },
+      "subHeading":{
+        "type":"string"
+      } 
+    },
+    "required": ["description", "heading", "subHeading"],
+    "additionalProperties": false
+  }

@@ -1,5 +1,4 @@
-export interface CreateCategory{
-    name: string,
+export interface UpdateCategory{
     description: string,
     heading: string,
     subHeading?: string
