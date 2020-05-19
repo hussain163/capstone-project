@@ -1,6 +1,6 @@
 import * as AWS from 'aws-sdk'
 import { Item } from '../models/Item';
-import { UpdateItem } from '../requests/UpdateItem';
+import { UpdateItem } from '../requests/item/UpdateItem';
 import { Integer } from 'aws-sdk/clients/apigateway';
 
 export class ItemAcess{
@@ -73,8 +73,8 @@ export class ItemAcess{
           return result.Count
     }
 
-    createSignedUrl(imageId: string): string{
-        return this.s3.getSignedUrl('putObject',{
+    async createSignedUrl(imageId: string): Promise<string>{
+        return await this.s3.getSignedUrl('putObject',{
             Bucket: this.bucketName,
             Key: imageId,
             Expires: 3000
@@ -93,6 +93,24 @@ export class ItemAcess{
         // will return a list of a single item
         console.log("Get item result: ", item)
         return item.Items as Item[]
+    }
+
+    async deleteItem(userId:string, imageId: string){
+        await this.doClient.delete({
+            TableName: this.imagesTable,
+            Key:{
+                userId,
+                imageId
+            }
+        }).promise()
+    }
+
+    async deleteImageFromBucket(imageId: string){
+        await this.s3.deleteObject({
+            Bucket: this.bucketName,
+            Key: imageId
+        }).promise()
+        
     }
 
 }

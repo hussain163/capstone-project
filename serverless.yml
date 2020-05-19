@@ -28,6 +28,7 @@ provider:
     IMAGES_TABLE: dg-images-${self:provider.stage}
     IMAGES_INDEX: dg-images-index-${self:provider.stage}
     IMAGES_BUCKET: dg-images-bucket-${self:provider.stage}
+    CATEGORIES_TABLE: dg-categories-bucket-${self:provider.stage}
   
   iamRoleStatements:
     - Effect: Allow
@@ -35,6 +36,7 @@ provider:
         - dynamodb:Query
         - dynamodb:PutItem
         - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
       Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
     - Effect: Allow
       Action:
@@ -44,7 +46,16 @@ provider:
       Action:
         - s3:PutObject
         - s3:GetObject
+        - s3:DeleteObject
       Resource: arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET}/*
+
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATEGORIES_TABLE}
 
 functions:
 
@@ -52,7 +63,7 @@ functions:
     handler: src/lambda/auth/auth0Authorizer.handler
 
   GetAllItems:
-    handler: src/lambda/http/getAllItems.handler
+    handler: src/lambda/item/http/getAllItems.handler
     events:
       - http:
           method: get
@@ -61,7 +72,7 @@ functions:
           cors: true
     
   GetUploadUrl:
-    handler: src/lambda/http/generateUploadUrl.handler
+    handler: src/lambda/http/item/generateUploadUrl.handler
     events:
       - http:
           method: get
@@ -70,7 +81,7 @@ functions:
           cors: true
   
   CreateItem:
-    handler: src/lambda/http/createItem.handler
+    handler: src/lambda/http/item/createItem.handler
     events:
       - http:
           method: post
@@ -82,7 +93,7 @@ functions:
               application/json: ${file(src/validator/create-item-request.json)}
 
   GetItem:
-    handler: src/lambda/http/getItem.handler
+    handler: src/lambda/http/item/getItem.handler
     events:
       - http:
           method: get
@@ -91,7 +102,7 @@ functions:
           cors: true
   
   UpdateItem:
-    handler: src/lambda/http/updateItem.handler
+    handler: src/lambda/http/item/updateItem.handler
     events:
       - http:
           method: put
@@ -101,6 +112,15 @@ functions:
           request:
             schema:
               application/json: ${file(src/validator/update-item-request.json)}
+  
+  DeleteItem:
+    handler: src/lambda/http/item/deleteItem.handler
+    events:
+      - http:
+          method: delete
+          path: item/{imageId}
+          authorizer: Auth
+          cors: true
 
 resources:
   Resources:
@@ -130,6 +150,20 @@ resources:
               KeyType: HASH
             Projection:
               ProjectionType: ALL
+
+    CategoriesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: categoryId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: categoryId   #Partition Key
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.CATEGORIES_TABLE}
+
+      
     
     #Images bucket
     ImagesBucket:
@@ -157,10 +191,9 @@ resources:
           Id: MyBucketPolicy
           Version: '2012-10-17'
           Statement:
-            - Sid: PublicReadForGetObjects
+            - Sid: PublicReadForGetBucketObjects
               Effect: 'Allow'
               Principal: '*'
               Action: 's3:GetObject'
               Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET}/*'
         Bucket: !Ref ImagesBucket
-  

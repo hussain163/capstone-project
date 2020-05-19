@@ -1,29 +1,33 @@
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { checkItemExists, getItem } from "../../businessLogic/Item";
+import { getUserId } from "../../../utils";
+import { checkItemExists, deleteItem } from "../../../businessLogic/Item";
+
 
 export const handler: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
-    const imageId = event.pathParameters.imageId
+    const userId = getUserId(event)
+    const imageId = event.pathParameters.imageId 
+    
 
     if(await checkItemExists(imageId) !== 1){
         return {
-            statusCode: 200,
+            statusCode: 404,
             headers: {
                 'Access-Control-Allow-Origin' : '*'
             },
-            body: `Item does not exist for ${imageId}`
+            body: 'Item Not found'
         }
     }
 
-    const items = getItem(imageId)
+    await deleteItem(userId, imageId)
+    
 
     return {
         statusCode: 200,
         headers: {
             'Access-Control-Allow-Origin' : '*'
         },
-        body: JSON.stringify({
-            item: items[0]
-        })
+        body: 'Item and image delete successfully'
+
     }
 }

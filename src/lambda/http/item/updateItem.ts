@@ -1,7 +1,7 @@
 import { APIGatewayProxyHandler, APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import { UpdateItem } from "../../requests/UpdateItem";
-import { getUserId } from "../../utils";
-import { updateItem, checkItemExists } from "../../businessLogic/Item";
+import { UpdateItem } from "../../../requests/item/UpdateItem";
+import { getUserId } from "../../../utils";
+import { updateItem, checkItemExists } from "../../../businessLogic/Item";
 
 export const handler: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
@@ -19,7 +19,7 @@ export const handler: APIGatewayProxyHandler = async(event: APIGatewayProxyEvent
         }
     }
 
-    const result = updateItem(item, userId, imageId)
+    const result = await updateItem(item, userId, imageId)
 
 
     return {

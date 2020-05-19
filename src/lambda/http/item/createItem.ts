@@ -1,14 +1,14 @@
 import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } from "aws-lambda";
-import { getUserId } from "../../utils";
-import { CreateItem } from "../../requests/CreateItem";
-import { createItem } from "../../businessLogic/Item";
+import { getUserId } from "../../../utils";
+import { CreateItem } from "../../../requests/item/CreateItem";
+import { createItem } from "../../../businessLogic/Item";
 
 export const handler:APIGatewayProxyHandler = async(event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
 
     const userId = getUserId(event)
     const request: CreateItem = JSON.parse(event.body)
 
-    const item = createItem(request, userId)
+    const item = await createItem(request, userId)
 
     return {
         statusCode: 200,
