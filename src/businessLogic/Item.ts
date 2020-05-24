@@ -22,7 +22,8 @@ export async function createItem(newItem: CreateItem, userId: string): Promise<I
       imageId,
       createdAt,
       name: newItem.name,
-      description: newItem.description
+      description: newItem.description,
+      url: ''
     }
 
   return await itemAcess.createItem(item)
@@ -37,7 +38,7 @@ export async function checkItemExists(imageId: string): Promise<Integer> {
     return await itemAcess.checkIfItemExists(imageId)
 }  
 
-export async function createSignedUrl(imageId: string): string{
+export async function createSignedUrl(imageId: string): Promise<string>{
     return await itemAcess.createSignedUrl(imageId)
 }
 

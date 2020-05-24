@@ -1,13 +1,16 @@
 import * as AWS from 'aws-sdk'
+import * as AWSXRay from "aws-xray-sdk"
 import { Item } from '../models/Item';
 import { UpdateItem } from '../requests/item/UpdateItem';
 import { Integer } from 'aws-sdk/clients/apigateway';
 
+const XAWS = AWSXRay.captureAWS(AWS)
+
 export class ItemAcess{
 
     constructor(
-        private readonly doClient = new AWS.DynamoDB.DocumentClient(),
-        private readonly s3 = new AWS.S3({signatureVersion: 'v4'}),
+        private readonly doClient = new XAWS.DynamoDB.DocumentClient(),
+        private readonly s3 = new XAWS.S3({signatureVersion: 'v4'}),
         private readonly imagesTable = process.env.IMAGES_TABLE,
         private readonly imagesIndex = process.env.IMAGES_INDEX,
         private readonly bucketName = process.env.IMAGES_BUCKET

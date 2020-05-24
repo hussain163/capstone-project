@@ -1,4 +1,4 @@
 export interface UpdateItem{
-    name?: string,
-    description?: string
+    name: string,
+    description: string
 }

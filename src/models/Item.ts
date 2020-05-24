@@ -4,5 +4,5 @@ export interface Item{
     createdAt: string,
     name: string,
     description: string,
-    url?: string
+    url: string
 }

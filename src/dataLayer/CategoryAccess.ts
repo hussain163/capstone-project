@@ -2,11 +2,14 @@ import * as AWS from 'aws-sdk'
 import { Category } from '../models/Category';
 import { Integer } from 'aws-sdk/clients/apigateway';
 import { UpdateCategory } from '../requests/category/UpdateCategory';
+import * as AWSXRay from "aws-xray-sdk"
+
+const XAWS = AWSXRay.captureAWS(AWS)
 
 export class CategoryAcess{
 
     constructor(
-        private readonly doClient = new AWS.DynamoDB.DocumentClient(),
+        private readonly doClient = new XAWS.DynamoDB.DocumentClient(),
         private readonly categoriesTable = process.env.CATEGORIES_TABLE,
     ){}
 
