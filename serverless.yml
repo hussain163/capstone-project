@@ -110,7 +110,7 @@ functions:
         Action:
           - dynamodb:PutItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
-
+  
   GetItem:
     handler: src/lambda/http/item/getItem.handler
     events:
@@ -218,7 +218,7 @@ functions:
           - dynamodb:DeleteItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATEGORIES_TABLE}
 
-  GetItem:
+  GetCategory:
     handler: src/lambda/http/category/getCategory.handler
     events:
       - http:
