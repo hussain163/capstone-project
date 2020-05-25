@@ -1,4 +1,4 @@
-
+#Udacity Capstone
 In this project we build a serverless application using AWS tech such as Lambda, API Gateway, DynamoDB etc.
 The project has two main features:
 1. The open feed page which displays different categories. We have different Lambda functions for the CRUD operations. These apis are now open, which can furthur be closed/restricted to a certain user only in the future scope.
