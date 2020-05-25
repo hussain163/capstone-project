@@ -1,0 +1,375 @@
+service:
+  name: capstone-project
+# app and org for use with dashboard.serverless.com
+#app: your-app-name
+#org: your-org-name
+
+custom:
+  webpack:
+    webpackConfig: ./webpack.config.js
+    includeModules: true
+
+# Add the serverless-webpack plugin
+plugins:
+  - serverless-webpack
+  - serverless-iam-roles-per-function
+  - serverless-plugin-tracing
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+  stage: ${opt:stage, 'dev'}
+  region: ${opt:region, 'us-east-2'}
+
+  # tracing:  #Distributed tracing
+  #   lambda: true
+  #   apiGateway: true
+
+  tracing: true
+
+  apiGateway:
+    minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
+  environment:
+    AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
+    IMAGES_TABLE: dg-images-${self:provider.stage}
+    IMAGES_INDEX: dg-images-index-${self:provider.stage}
+    IMAGES_BUCKET: dg-images-bucket-${self:provider.stage}
+    CATEGORIES_TABLE: dg-categories-bucket-${self:provider.stage}
+
+  iamRoleStatements:
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
+  
+  # iamRoleStatements:
+  #   - Effect: Allow
+  #     Action:
+  #       - dynamodb:Query
+  #       - dynamodb:PutItem
+  #       - dynamodb:UpdateItem
+  #       - dynamodb:DeleteItem
+  #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
+  #   - Effect: Allow
+  #     Action:
+  #       - dynamodb:Query
+  #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}/index/${self:provider.environment.IMAGES_INDEX}
+  #   - Effect: Allow
+  #     Action:
+  #       - s3:PutObject
+  #       - s3:GetObject
+  #       - s3:DeleteObject
+  #     Resource: arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET}/*
+
+  #   - Effect: Allow
+  #     Action:
+  #       - dynamodb:Query
+  #       - dynamodb:PutItem
+  #       - dynamodb:UpdateItem
+  #       - dynamodb:DeleteItem
+  #     Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATEGORIES_TABLE}
+
+functions:
+
+  Auth:
+    handler: src/lambda/auth/auth0Authorizer.handler
+
+  GetAllItems:
+    handler: src/lambda/http/item/getAllItems.handler
+    events:
+      - http:
+          method: get
+          path: items
+          authorizer: Auth
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
+    
+  GetUploadUrl:
+    handler: src/lambda/http/item/generateUploadUrl.handler
+    events:
+      - http:
+          method: get
+          path: item/{imageId}/attachment
+          authorizer: Auth
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - s3:PutObject
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET}/*
+  
+  CreateItem:
+    handler: src/lambda/http/item/createItem.handler
+    events:
+      - http:
+          method: post
+          path: item
+          authorizer: Auth
+          cors: true
+          request:
+            schema:
+              application/json: ${file(src/validator/create-item-request.json)}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
+  
+  GetItem:
+    handler: src/lambda/http/item/getItem.handler
+    events:
+      - http:
+          method: get
+          path: item/{imageId}
+          authorizer: Auth
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}/index/${self:provider.environment.IMAGES_INDEX}
+  
+  UpdateItem:
+    handler: src/lambda/http/item/updateItem.handler
+    events:
+      - http:
+          method: put
+          path: item/{imageId}
+          authorizer: Auth
+          cors: true
+          request:
+            schema:
+              application/json: ${file(src/validator/update-item-request.json)}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}/index/${self:provider.environment.IMAGES_INDEX}
+  
+  DeleteItem:
+    handler: src/lambda/http/item/deleteItem.handler
+    events:
+      - http:
+          method: delete
+          path: item/{imageId}
+          authorizer: Auth
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
+      - Effect: Allow
+        Action:
+          - s3:DeleteObject
+        Resource: arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET}/*
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}/index/${self:provider.environment.IMAGES_INDEX}
+
+  GetAllCategories:
+    handler: src/lambda/http/category/getAllCategories.handler
+    tracing: false # overrides provider settings (opt out)
+    events:
+      - http:
+          method: get
+          path: categories
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Scan
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATEGORIES_TABLE}
+
+  CreateCategory:
+    handler: src/lambda/http/category/createCategory.handler
+    tracing: false # overrides provider settings (opt out)
+    events:
+      - http:
+          method: post
+          path: category
+          cors: true
+          request:
+            schema:
+              application/json: ${file(src/validator/create-category-request.json)}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:PutItem
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATEGORIES_TABLE}
+
+  UpdateCategory:
+    handler: src/lambda/http/category/updateCategory.handler
+    tracing: false # overrides provider settings (opt out)
+    events:
+      - http:
+          method: put
+          path: category/{categoryId}
+          cors: true
+          request:
+            schema:
+              application/json: ${file(src/validator/update-category-request.json)}
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:UpdateItem
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATEGORIES_TABLE}
+
+  DeleteCategory:
+    handler: src/lambda/http/category/deleteCategory.handler
+    tracing: false # overrides provider settings (opt out)
+    events:
+      - http:
+          method: delete
+          path: category/{categoryId}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:DeleteItem
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATEGORIES_TABLE}
+
+  GetCategory:
+    handler: src/lambda/http/category/getCategory.handler
+    tracing: false # overrides provider settings (opt out)
+    events:
+      - http:
+          method: get
+          path: category/{categoryId}
+          cors: true
+    iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATEGORIES_TABLE}
+
+
+  # Sync data with elastic search
+  SyncWithElaticSearch:
+    environment:
+      ES_ENDPOINT: !GetAtt ImagesSearch.DomainEndpoint
+    handler: src/lambda/dynamodb/syncWithES.handler
+    events:
+      - stream:
+          type: dynamodb
+          arn: !GetAtt ImagesTable.StreamArn
+
+resources:
+  Resources:
+  
+    #DynamoDb Table
+    ImagesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: userId
+            AttributeType: S
+          - AttributeName: imageId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: userId   #Partition Key
+            KeyType: HASH
+          - AttributeName: imageId  #Sort Key
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.IMAGES_TABLE}
+        StreamSpecification:  # Stream data to sync with Elastic Search
+          StreamViewType: NEW_IMAGE
+        
+        # Global Index        
+        GlobalSecondaryIndexes:
+          - IndexName: ${self:provider.environment.IMAGES_INDEX}
+            KeySchema:
+            - AttributeName: imageId
+              KeyType: HASH
+            Projection:
+              ProjectionType: ALL
+
+    CategoriesTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: categoryId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: categoryId   #Partition Key
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:provider.environment.CATEGORIES_TABLE}
+
+      
+    
+    #Images bucket
+    ImagesBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.IMAGES_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - HEAD
+              MaxAge: 3000
+    
+    BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        PolicyDocument:
+          Id: MyBucketPolicy
+          Version: '2012-10-17'
+          Statement:
+            - Sid: PublicReadForGetBucketObjects
+              Effect: 'Allow'
+              Principal: '*'
+              Action: 's3:GetObject'
+              Resource: 'arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET}/*'
+        Bucket: !Ref ImagesBucket
+
+
+    # Elastic Search instance    
+    ImagesSearch:
+      Type: AWS::Elasticsearch::Domain
+      Properties:
+        ElasticsearchVersion: '6.3'
+        DomainName: images-search-${self:provider.stage}
+        ElasticsearchClusterConfig:
+          DedicatedMasterEnabled: false
+          InstanceCount: '1'
+          ZoneAwarenessEnabled: false
+          InstanceType: t2.small.elasticsearch
+        EBSOptions:
+          EBSEnabled: true
+          Iops: 0
+          VolumeSize: 10
+          VolumeType: 'gp2'
+
+        AccessPolicies:
+          Version: '2012-10-17'
+          Statement:
+            -
+              Effect: Allow
+              Principal:
+                AWS: '*'
+              Action: 'es:*'
+              Resource: '*'

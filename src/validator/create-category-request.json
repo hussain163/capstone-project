@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "create-category",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string"
+      },
+      "description":{
+          "type": "string"
+      },
+      "heading":{
+          "type": "string"
+      },
+      "subHeading":{
+          "type":"string"
+      } 
+    },
+    "required": ["name", "description", "heading", "subHeading"],
+    "additionalProperties": false
+  }
