@@ -152,6 +152,10 @@ functions:
         Action:
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}/index/${self:provider.environment.IMAGES_INDEX}
   
   DeleteItem:
     handler: src/lambda/http/item/deleteItem.handler
@@ -170,6 +174,10 @@ functions:
         Action:
           - s3:DeleteObject
         Resource: arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET}/*
+      - Effect: Allow
+        Action:
+          - dynamodb:Query
+        Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.IMAGES_TABLE}/index/${self:provider.environment.IMAGES_INDEX}
 
   GetAllCategories:
     handler: src/lambda/http/category/getAllCategories.handler

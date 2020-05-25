@@ -44,7 +44,7 @@ export class CategoryAcess{
             ExpressionAttributeValues: {
                 ':description' : category.description,
                 ':heading' : category.heading,
-                ':subheading' : category.subHeading
+                ':subHeading' : category.subHeading
             },
             ReturnValues: 'ALL_NEW'
         }).promise()
