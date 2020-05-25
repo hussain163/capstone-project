@@ -1,0 +1,344 @@
+{
+	"info": {
+		"_postman_id": "ce0d37b6-4c10-4b00-ae12-d622aaf57b4b",
+		"name": "Capstone",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get All Items",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Item",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikh4V3R2VFR0Wko0VlBBQnBEY3VaMCJ9.eyJpc3MiOiJodHRwczovL2h1c3N1LmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwMDMyNjg2OTYyNzAxMjM0ODcwNSIsImF1ZCI6InRMVG5yVTdWNmh2MkZWV3dmUWdCOUxOd2IyRHYwaTJpIiwiaWF0IjoxNTg5OTA2ODkxLCJleHAiOjE1ODk5NDI4OTEsImF0X2hhc2giOiJkV0d5eWQ1Ymx5TEd1bUNHa3k3Qkd3Iiwibm9uY2UiOiJ5dGxxUDJCU3RTTHk4Y0I2Ymh3eFNia3ZGcGpIQVJaaCJ9.MOxT_qODinCZ-sYpFMENUGp103usSMAf0BRSd1ksZZOom5ahxNcNCGAdSY4oQi_24Jh5TCnPToXTYeodC6AMEc-g_WIgE1D-RkWhWMTt0DwgmwKiCxhQfDoih_T2PMY_QsOxI4YpDGJdZGhR4IbwAxiRFMLUhZuFll-sPAGWjYaHoOLJuV39UF0Jy8n7abr3cF4BBRLUmxaCNdowEx7Ox50BMUdoz9L829QrYf2bweeCjBU4MKribTfR0nD6UUCIXcKcAtqhLViV9oKZI9KGcpzXfqbo0IUH0-LvvQi_U9JoxvVdUe2H0MD287jBOcvrMrUoskfmQK3IwCdfdEmgbw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"B1\",\n\t\"description\":\"B 1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{path}}.execute-api.us-east-2.amazonaws.com/dev/item",
+					"protocol": "https",
+					"host": [
+						"{{path}}",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"item"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Item",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikh4V3R2VFR0Wko0VlBBQnBEY3VaMCJ9.eyJpc3MiOiJodHRwczovL2h1c3N1LmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwMDMyNjg2OTYyNzAxMjM0ODcwNSIsImF1ZCI6InRMVG5yVTdWNmh2MkZWV3dmUWdCOUxOd2IyRHYwaTJpIiwiaWF0IjoxNTg5OTA2ODkxLCJleHAiOjE1ODk5NDI4OTEsImF0X2hhc2giOiJkV0d5eWQ1Ymx5TEd1bUNHa3k3Qkd3Iiwibm9uY2UiOiJ5dGxxUDJCU3RTTHk4Y0I2Ymh3eFNia3ZGcGpIQVJaaCJ9.MOxT_qODinCZ-sYpFMENUGp103usSMAf0BRSd1ksZZOom5ahxNcNCGAdSY4oQi_24Jh5TCnPToXTYeodC6AMEc-g_WIgE1D-RkWhWMTt0DwgmwKiCxhQfDoih_T2PMY_QsOxI4YpDGJdZGhR4IbwAxiRFMLUhZuFll-sPAGWjYaHoOLJuV39UF0Jy8n7abr3cF4BBRLUmxaCNdowEx7Ox50BMUdoz9L829QrYf2bweeCjBU4MKribTfR0nD6UUCIXcKcAtqhLViV9oKZI9KGcpzXfqbo0IUH0-LvvQi_U9JoxvVdUe2H0MD287jBOcvrMrUoskfmQK3IwCdfdEmgbw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"B 1.1\",\n\t\"description\":\"B 1.1\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{path}}.execute-api.us-east-2.amazonaws.com/dev/item/64272773-b48a-4a5d-bde4-bea560f829fa",
+					"protocol": "https",
+					"host": [
+						"{{path}}",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"item",
+						"64272773-b48a-4a5d-bde4-bea560f829fa"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Item",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikh4V3R2VFR0Wko0VlBBQnBEY3VaMCJ9.eyJpc3MiOiJodHRwczovL2h1c3N1LmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwMDMyNjg2OTYyNzAxMjM0ODcwNSIsImF1ZCI6InRMVG5yVTdWNmh2MkZWV3dmUWdCOUxOd2IyRHYwaTJpIiwiaWF0IjoxNTg5OTA2ODkxLCJleHAiOjE1ODk5NDI4OTEsImF0X2hhc2giOiJkV0d5eWQ1Ymx5TEd1bUNHa3k3Qkd3Iiwibm9uY2UiOiJ5dGxxUDJCU3RTTHk4Y0I2Ymh3eFNia3ZGcGpIQVJaaCJ9.MOxT_qODinCZ-sYpFMENUGp103usSMAf0BRSd1ksZZOom5ahxNcNCGAdSY4oQi_24Jh5TCnPToXTYeodC6AMEc-g_WIgE1D-RkWhWMTt0DwgmwKiCxhQfDoih_T2PMY_QsOxI4YpDGJdZGhR4IbwAxiRFMLUhZuFll-sPAGWjYaHoOLJuV39UF0Jy8n7abr3cF4BBRLUmxaCNdowEx7Ox50BMUdoz9L829QrYf2bweeCjBU4MKribTfR0nD6UUCIXcKcAtqhLViV9oKZI9KGcpzXfqbo0IUH0-LvvQi_U9JoxvVdUe2H0MD287jBOcvrMrUoskfmQK3IwCdfdEmgbw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://sx10k754ze.execute-api.us-east-2.amazonaws.com/dev/item/64272773-b48a-4a5d-bde4-bea560f829f",
+					"protocol": "https",
+					"host": [
+						"sx10k754ze",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"item",
+						"64272773-b48a-4a5d-bde4-bea560f829f"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Upload Url",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get An Item",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": ""
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create Category",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\":\"Cat-2\",\n\t\"description\":\"Category 2\",\n\t\"heading\":\"Wall Clocks\",\n\t\"subHeading\": \"Glass\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{path}}.execute-api.us-east-2.amazonaws.com/dev/category",
+					"protocol": "https",
+					"host": [
+						"{{path}}",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"category"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get categories",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{path}}.execute-api.us-east-2.amazonaws.com/dev/categories",
+					"protocol": "https",
+					"host": [
+						"{{path}}",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update category",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"description\":\"Basins\",\n\t\"heading\":\"Basin\",\n\t\"subHeading\":\"glass\"\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{path}}.execute-api.us-east-2.amazonaws.com/dev/category/4424c922-78a5-4b6f-a73e-9f2fbb310236",
+					"protocol": "https",
+					"host": [
+						"{{path}}",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"category",
+						"4424c922-78a5-4b6f-a73e-9f2fbb310236"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Category",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://{{path}}.execute-api.us-east-2.amazonaws.com/dev/category/4424c922-78a5-4b6f-a73e-9f2fbb310236",
+					"protocol": "https",
+					"host": [
+						"{{path}}",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"category",
+						"4424c922-78a5-4b6f-a73e-9f2fbb310236"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get A Category",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://{{path}}.execute-api.us-east-2.amazonaws.com/dev/category/4424c922-78a5-4b6f-a73e-9f2fbb310236",
+					"protocol": "https",
+					"host": [
+						"{{path}}",
+						"execute-api",
+						"us-east-2",
+						"amazonaws",
+						"com"
+					],
+					"path": [
+						"dev",
+						"category",
+						"4424c922-78a5-4b6f-a73e-9f2fbb310236"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6Ikh4V3R2VFR0Wko0VlBBQnBEY3VaMCJ9.eyJpc3MiOiJodHRwczovL2h1c3N1LmF1dGgwLmNvbS8iLCJzdWIiOiJnb29nbGUtb2F1dGgyfDEwMDMyNjg2OTYyNzAxMjM0ODcwNSIsImF1ZCI6InRMVG5yVTdWNmh2MkZWV3dmUWdCOUxOd2IyRHYwaTJpIiwiaWF0IjoxNTg5OTA2ODkxLCJleHAiOjE1ODk5NDI4OTEsImF0X2hhc2giOiJkV0d5eWQ1Ymx5TEd1bUNHa3k3Qkd3Iiwibm9uY2UiOiJ5dGxxUDJCU3RTTHk4Y0I2Ymh3eFNia3ZGcGpIQVJaaCJ9.MOxT_qODinCZ-sYpFMENUGp103usSMAf0BRSd1ksZZOom5ahxNcNCGAdSY4oQi_24Jh5TCnPToXTYeodC6AMEc-g_WIgE1D-RkWhWMTt0DwgmwKiCxhQfDoih_T2PMY_QsOxI4YpDGJdZGhR4IbwAxiRFMLUhZuFll-sPAGWjYaHoOLJuV39UF0Jy8n7abr3cF4BBRLUmxaCNdowEx7Ox50BMUdoz9L829QrYf2bweeCjBU4MKribTfR0nD6UUCIXcKcAtqhLViV9oKZI9KGcpzXfqbo0IUH0-LvvQi_U9JoxvVdUe2H0MD287jBOcvrMrUoskfmQK3IwCdfdEmgbw",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "74ed93bd-c6f5-4484-8ae7-f16bb3ae4388",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "b561a920-b45b-4e16-a1cf-efd02e110600",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "fbf53ac4-f55a-4eb7-885e-0ed0233d2408",
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "1d8f68ff-bbdd-42bf-ad09-74a35e2f6bad",
+			"key": "path",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -13,6 +13,7 @@ custom:
 plugins:
   - serverless-webpack
   - serverless-iam-roles-per-function
+  - serverless-plugin-tracing
 
 provider:
   name: aws
@@ -21,9 +22,11 @@ provider:
   stage: ${opt:stage, 'dev'}
   region: ${opt:region, 'us-east-2'}
 
-  tracing:  #Distributed tracing
-    lambda: true
-    apiGateway: true
+  # tracing:  #Distributed tracing
+  #   lambda: true
+  #   apiGateway: true
+
+  tracing: true
 
   apiGateway:
     minimumCompressionSize: 1024 # Enable gzip compression for responses > 1 KB
@@ -33,6 +36,14 @@ provider:
     IMAGES_INDEX: dg-images-index-${self:provider.stage}
     IMAGES_BUCKET: dg-images-bucket-${self:provider.stage}
     CATEGORIES_TABLE: dg-categories-bucket-${self:provider.stage}
+
+  iamRoleStatements:
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
   
   # iamRoleStatements:
   #   - Effect: Allow
@@ -162,6 +173,7 @@ functions:
 
   GetAllCategories:
     handler: src/lambda/http/category/getAllCategories.handler
+    tracing: false # overrides provider settings (opt out)
     events:
       - http:
           method: get
@@ -175,6 +187,7 @@ functions:
 
   CreateCategory:
     handler: src/lambda/http/category/createCategory.handler
+    tracing: false # overrides provider settings (opt out)
     events:
       - http:
           method: post
@@ -191,6 +204,7 @@ functions:
 
   UpdateCategory:
     handler: src/lambda/http/category/updateCategory.handler
+    tracing: false # overrides provider settings (opt out)
     events:
       - http:
           method: put
@@ -203,10 +217,12 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:UpdateItem
+          - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATEGORIES_TABLE}
 
   DeleteCategory:
     handler: src/lambda/http/category/deleteCategory.handler
+    tracing: false # overrides provider settings (opt out)
     events:
       - http:
           method: delete
@@ -216,10 +232,12 @@ functions:
       - Effect: Allow
         Action:
           - dynamodb:DeleteItem
+          - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.CATEGORIES_TABLE}
 
   GetCategory:
     handler: src/lambda/http/category/getCategory.handler
+    tracing: false # overrides provider settings (opt out)
     events:
       - http:
           method: get

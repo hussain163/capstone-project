@@ -3,6 +3,8 @@ import { Category } from '../models/Category';
 import { Integer } from 'aws-sdk/clients/apigateway';
 import { UpdateCategory } from '../requests/category/UpdateCategory';
 
+// const XAWS = AWSXRay.captureAWS(AWS)
+
 export class CategoryAcess{
 
     constructor(

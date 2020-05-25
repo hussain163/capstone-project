@@ -4,5 +4,5 @@ export interface Category{
     name: string,
     description: string,
     heading: string,
-    subHeading?: string
+    subHeading: string
 }

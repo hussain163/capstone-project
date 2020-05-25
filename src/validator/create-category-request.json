@@ -16,6 +16,6 @@
           "type":"string"
       } 
     },
-    "required": ["name", "description", "heading"],
+    "required": ["name", "description", "heading", "subHeading"],
     "additionalProperties": false
   }
